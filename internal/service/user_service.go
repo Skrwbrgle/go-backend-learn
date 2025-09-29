@@ -8,7 +8,7 @@ import (
 
 type UserService interface {
 	CreateUser(user *model.User) error
-	GetUsers(page, limit int) ([]model.User, model.Pagination, error)
+	GetUsers(page, limit int, search string) ([]model.User, model.Pagination, error)
 	GetUserByID(id uuid.UUID) (*model.User, error)
 	UpdateUser(id uuid.UUID, user *model.User) error
 	DeleteUser(id uuid.UUID) error
@@ -26,8 +26,8 @@ func (s *userService) CreateUser(user *model.User) error {
 	return s.repo.Create(user)
 }
 
-func (s *userService) GetUsers(page, limit int) ([]model.User, model.Pagination, error) {
-	users, totalRows, err := s.repo.FindAll(page, limit)
+func (s *userService) GetUsers(page, limit int, search string) ([]model.User, model.Pagination, error) {
+	users, totalRows, err := s.repo.FindAll(page, limit, search)
 	if err != nil {
 		return nil, model.Pagination{}, err
 	}

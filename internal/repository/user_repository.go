@@ -8,7 +8,7 @@ import (
 
 type UserRepository interface {
 	Create(user *model.User) error
-	FindAll(page, limit int) ([]model.User, int64, error)
+	FindAll(page, limit int, search string) ([]model.User, int64, error)
 	FindByID(id uuid.UUID) (*model.User, error)
 	Update(user *model.User) error
 	Delete(id uuid.UUID) error
@@ -26,18 +26,21 @@ func (r *userRepo) Create(user *model.User) error {
 	return r.db.Create(user).Error
 }
 
-func (r *userRepo) FindAll(page, limit int) ([]model.User, int64, error) {
+func (r *userRepo) FindAll(page, limit int, search string) ([]model.User, int64, error) {
 	var users []model.User
 	var totalRows int64
 
-	// hitung total rows
-	if err := r.db.Model(&model.User{}).Count(&totalRows).Error; err != nil {
+	query := r.db.Model(&model.User{})
+	if search != "" {
+		query = query.Where("name ILIKE  ? OR email ILIKE  ? OR role ILIKE  ?", "%"+search+"%", "%"+search+"%", "%"+search+"%")
+	}
+
+	if err := query.Count(&totalRows).Error; err != nil {
 		return nil, 0, err
 	}
 
-	// apply pagination
 	offset := (page - 1) * limit
-	if err := r.db.Limit(limit).Offset(offset).Find(&users).Error; err != nil {
+	if err := query.Limit(limit).Offset(offset).Find(&users).Error; err != nil {
 		return nil, 0, err
 	}
 

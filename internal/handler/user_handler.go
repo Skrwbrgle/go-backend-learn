@@ -3,6 +3,7 @@ package handler
 import (
 	"strconv"
 
+	"github.com/Skrwbrgle/go-backend-learn/internal/dto"
 	"github.com/Skrwbrgle/go-backend-learn/internal/model"
 	"github.com/Skrwbrgle/go-backend-learn/internal/service"
 	"github.com/Skrwbrgle/go-backend-learn/pkg/response"
@@ -20,15 +21,23 @@ func NewUserHandler(service service.UserService) *UserHandler {
 }
 
 func (h *UserHandler) CreateUser(c *gin.Context) {
-	var user model.User
-	if err := c.ShouldBindJSON(&user); err != nil {
+	var req dto.CreateUserRequest
+	
+	if err := c.ShouldBindJSON(&req); err != nil {
 		response.BadRequest(c, err.Error())
 		return
 	}
 
-	if err := validator.Validate.Struct(user); err != nil {
+	if err := validator.Validate.Struct(req); err != nil {
 		response.BadRequest(c, err.Error())
 		return
+	}
+
+	user := model.User{
+		Name:     req.Name,
+		Email:    req.Email,
+		Password: req.Password, // nanti bisa hash
+		Role:     req.Role,
 	}
 
 	if err := h.service.CreateUser(&user); err != nil {
@@ -36,14 +45,20 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 		return
 	}
 
-	response.Created(c, user, "User created successfully")
+	response.Created(c, dto.UserResponse{
+		ID:    user.ID,
+		Name:  user.Name,
+		Email: user.Email,
+		Role:  user.Role,
+	}, "User created successfully")
 }
 
 func (h *UserHandler) GetUsers(c *gin.Context) {
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
+	search := c.DefaultQuery("search", "")
 
-	users, pagination, err := h.service.GetUsers(page, limit)
+	users, pagination, err := h.service.GetUsers(page, limit, search)
 	if err != nil {
 		response.InternalError(c, err.Error())
 		return
@@ -61,6 +76,11 @@ func (h *UserHandler) GetUserByID(c *gin.Context) {
 	}
 
 	user, err := h.service.GetUserByID(id)
+	if user == nil {
+		response.NotFound(c, "User not found")
+		return
+	}
+
 	if err != nil {
 		response.InternalError(c, err.Error())
 		return
