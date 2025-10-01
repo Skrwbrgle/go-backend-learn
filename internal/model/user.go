@@ -19,7 +19,7 @@ type User struct {
 	Name      string    `json:"name" validate:"required,min=3"`
 	Email     string    `json:"email" gorm:"unique" validate:"required,email"`
 	Password  string    `json:"-" validate:"required,min=6"`
-	Role      string    `json:"role"`
+	Role      string    `json:"role" validate:"oneof=super_admin admin viewer user"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }

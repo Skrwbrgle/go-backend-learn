@@ -4,6 +4,7 @@ import (
 	"github.com/Skrwbrgle/go-backend-learn/internal/model"
 	"github.com/Skrwbrgle/go-backend-learn/internal/repository"
 	"github.com/google/uuid"
+	"go.uber.org/zap"
 )
 
 type UserService interface {
@@ -16,10 +17,11 @@ type UserService interface {
 
 type userService struct {
 	repo repository.UserRepository
+	logger  *zap.Logger
 }
 
-func NewUserService(repo repository.UserRepository) UserService {
-	return &userService{repo}
+func NewUserService(repo repository.UserRepository, logger  *zap.Logger) UserService {
+	return &userService{repo, logger}
 }
 
 func (s *userService) CreateUser(user *model.User) error {

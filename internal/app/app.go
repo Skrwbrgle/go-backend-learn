@@ -10,11 +10,13 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
 	"github.com/Skrwbrgle/go-backend-learn/config"
 	dbpkg "github.com/Skrwbrgle/go-backend-learn/internal/db"
+	"github.com/Skrwbrgle/go-backend-learn/internal/middleware"
 	"github.com/Skrwbrgle/go-backend-learn/internal/routes"
 	"github.com/Skrwbrgle/go-backend-learn/pkg/logger"
 )
@@ -28,8 +30,14 @@ func NewApp() *App {
 	cfg := config.LoadConfig()
 
 	// Init logger
-	logger.InitLogger()
+	env := os.Getenv("APP_ENV")
+	if env == "" {
+		env = "development"
+	}
+
+	logger.InitLogger(env)
 	defer logger.Log.Sync()
+	logger.Log.Info("Starting server...", zap.String("env", env))
 
 	// DB
 	db, err := gorm.Open(postgres.Open(cfg.DBUrl), &gorm.Config{})
@@ -38,8 +46,11 @@ func NewApp() *App {
 	}
 	dbpkg.AutoMigrate(db)
 
-	// Router
 	r := gin.Default()
+	// Logging middleware
+	r.Use(middleware.LoggerMiddleware(logger.Log))
+
+	// Router
 	routes.SetupRouter(r, db)
 
 	return &App{
