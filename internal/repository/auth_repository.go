@@ -12,7 +12,7 @@ type AuthRepository interface {
 }
 
 type authRepo struct {
-	db *gorm.DB
+	db     *gorm.DB
 	logger *zap.Logger
 }
 

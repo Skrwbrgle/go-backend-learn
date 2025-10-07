@@ -1,0 +1,17 @@
+run:
+  timeout: 5m
+  tests: true
+
+linters:
+  enable:
+    - errcheck
+    - gosimple
+    - govet
+    - staticcheck
+    - unused
+    - ineffassign
+    - gofmt
+    - revive
+  disable:
+    - godox # biar gak error gara-gara TODO/FIXME
+    - gocyclo # bisa dimatiin kalau gak mau cek cyclomatic complexity

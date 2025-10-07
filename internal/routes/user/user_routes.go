@@ -8,7 +8,6 @@ import (
 	"go.uber.org/zap"
 )
 
-
 func RegisterUserRoutes(rg *gin.RouterGroup, userService service.UserService, logger *zap.Logger) {
 	h := handler.NewUserHandler(userService, logger)
 

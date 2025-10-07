@@ -22,4 +22,3 @@ func RegisterUserModule(r *gin.RouterGroup, db *gorm.DB) {
 	service := service.NewUserService(repo, logger.Log)
 	user.RegisterUserRoutes(r, service, logger.Log)
 }
-

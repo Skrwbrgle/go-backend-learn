@@ -8,10 +8,10 @@ import (
 )
 
 type Pagination struct {
-	Page      int `json:"page"`
-	Limit     int `json:"limit"`
-	TotalRows int64 `json:"totalRows"`
-	TotalPages int  `json:"totalPages"`
+	Page       int   `json:"page"`
+	Limit      int   `json:"limit"`
+	TotalRows  int64 `json:"totalRows"`
+	TotalPages int   `json:"totalPages"`
 }
 
 type User struct {
@@ -24,7 +24,7 @@ type User struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
+func (u *User) BeforeCreate(_ *gorm.DB) (err error) {
 	if u.ID == uuid.Nil {
 		u.ID = uuid.New()
 	}

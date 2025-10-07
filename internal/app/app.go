@@ -36,7 +36,11 @@ func NewApp() *App {
 	}
 
 	logger.InitLogger(env)
-	defer logger.Log.Sync()
+	defer func() {
+		if err := logger.Log.Sync(); err != nil {
+			logger.Log.Error("failed to sync logger", zap.Error(err))
+		}
+	}()
 	logger.Log.Info("Starting server...", zap.String("env", env))
 
 	// DB
@@ -47,6 +51,7 @@ func NewApp() *App {
 	dbpkg.AutoMigrate(db)
 
 	r := gin.Default()
+
 	// Logging middleware
 	r.Use(middleware.LoggerMiddleware(logger.Log))
 

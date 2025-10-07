@@ -8,13 +8,13 @@ import (
 )
 
 func RegisterAuthRoutes(rg *gin.RouterGroup, authService service.AuthService, logger *zap.Logger) {
-	h := handler.NewAuthHandler(authService, logger )
+	h := handler.NewAuthHandler(authService, logger)
 
 	publicGroup := rg.Group("/auth")
 
 	{
 		publicGroup.POST("/login", h.Login)
-		publicGroup.POST("/register", h.Register) 
+		publicGroup.POST("/register", h.Register)
 		publicGroup.POST("/logout", h.Logout)
 	}
 

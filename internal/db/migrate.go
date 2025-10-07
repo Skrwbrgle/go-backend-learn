@@ -7,10 +7,14 @@ import (
 	"github.com/Skrwbrgle/go-backend-learn/internal/model"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
-	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/jmoiron/sqlx"
-	_ "github.com/lib/pq"
 	"gorm.io/gorm"
+
+	// Import file source for database migration
+	_ "github.com/golang-migrate/migrate/v4/source/file"
+
+	// Import postgres driver
+	_ "github.com/lib/pq"
 )
 
 func RunMigrations(db *sqlx.DB) {
@@ -34,12 +38,12 @@ func RunMigrations(db *sqlx.DB) {
 }
 
 func AutoMigrate(db *gorm.DB) {
-    err := db.AutoMigrate(
-        &model.User{},
-        // &model.Product{},
-        // &model.Order{},
-    )
-    if err != nil {
-        log.Fatal("failed to run migrations:", err)
-    }
+	err := db.AutoMigrate(
+		&model.User{},
+		// &model.Product{},
+		// &model.Order{},
+	)
+	if err != nil {
+		log.Fatal("failed to run migrations:", err)
+	}
 }

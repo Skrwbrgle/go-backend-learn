@@ -27,7 +27,7 @@ func InitLogger(env string) {
 	encoderCfg.MessageKey = "msg"
 
 	core := zapcore.NewCore(
-		zapcore.NewJSONEncoder(encoderCfg), // JSON format
+		zapcore.NewJSONEncoder(encoderCfg),                              // JSON format
 		zapcore.NewMultiWriteSyncer(writer, zapcore.AddSync(os.Stdout)), // ke file + stdout
 		zapcore.InfoLevel, // level minimal (Info, bisa diubah ke Debug)
 	)

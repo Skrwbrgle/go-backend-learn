@@ -63,8 +63,8 @@ func (h *AuthHandler) Register(c *gin.Context) {
 		return
 	}
 
-	registerResp, err := h.service.Register(req);
-	if  err != nil {
+	registerResp, err := h.service.Register(req)
+	if err != nil {
 		h.logger.Warn("Register failed", zap.String("email", req.Email), zap.Error(err))
 		response.InternalError(c, err.Error())
 		return

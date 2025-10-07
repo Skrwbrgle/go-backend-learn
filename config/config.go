@@ -8,7 +8,7 @@ import (
 )
 
 type Config struct {
-	DBUrl    string
+	DBUrl     string
 	JWTSecret string
 }
 

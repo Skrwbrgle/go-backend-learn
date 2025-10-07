@@ -12,6 +12,6 @@ func SetupRouter(r *gin.Engine, db *gorm.DB) {
 		api.GET("/ping", handler.HealthCheck)
 
 		RegisterAuthModule(api, db)
-		RegisterUserModule(api, db) 
+		RegisterUserModule(api, db)
 	}
 }

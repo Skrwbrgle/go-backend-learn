@@ -16,11 +16,11 @@ type UserService interface {
 }
 
 type userService struct {
-	repo repository.UserRepository
-	logger  *zap.Logger
+	repo   repository.UserRepository
+	logger *zap.Logger
 }
 
-func NewUserService(repo repository.UserRepository, logger  *zap.Logger) UserService {
+func NewUserService(repo repository.UserRepository, logger *zap.Logger) UserService {
 	return &userService{repo, logger}
 }
 

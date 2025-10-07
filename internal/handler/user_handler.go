@@ -25,7 +25,7 @@ func NewUserHandler(service service.UserService, logger *zap.Logger) *UserHandle
 
 func (h *UserHandler) CreateUser(c *gin.Context) {
 	var req dto.CreateUserRequest
-	
+
 	if err := c.ShouldBindJSON(&req); err != nil {
 		h.logger.Warn("Invalid request body", zap.Error(err))
 		response.BadRequest(c, err.Error())
@@ -77,7 +77,7 @@ func (h *UserHandler) GetUsers(c *gin.Context) {
 		response.InternalError(c, err.Error())
 		return
 	}
-	
+
 	h.logger.Info("Users fetched successfully", zap.Int("page", page), zap.Int("limit", limit), zap.String("search", search))
 	response.SuccessWithMeta(c, users, pagination, "Users fetched successfully")
 }

@@ -16,7 +16,7 @@ type UserRepository interface {
 }
 
 type userRepo struct {
-	db *gorm.DB
+	db     *gorm.DB
 	logger *zap.Logger
 }
 
