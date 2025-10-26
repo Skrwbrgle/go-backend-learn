@@ -1,8 +1,6 @@
-package handler
+package auth
 
 import (
-	"github.com/Skrwbrgle/go-backend-learn/internal/dto"
-	"github.com/Skrwbrgle/go-backend-learn/internal/service"
 	"github.com/Skrwbrgle/go-backend-learn/pkg/response"
 	"github.com/Skrwbrgle/go-backend-learn/pkg/validator"
 	"github.com/gin-gonic/gin"
@@ -10,16 +8,16 @@ import (
 )
 
 type AuthHandler struct {
-	service service.AuthService
+	service AuthService
 	logger  *zap.Logger
 }
 
-func NewAuthHandler(service service.AuthService, logger *zap.Logger) *AuthHandler {
+func NewAuthHandler(service AuthService, logger *zap.Logger) *AuthHandler {
 	return &AuthHandler{service, logger}
 }
 
 func (h *AuthHandler) Login(c *gin.Context) {
-	var req dto.LoginRequest
+	var req LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		h.logger.Warn("Invalid login payload", zap.Error(err))
 		response.BadRequest(c, err.Error())
@@ -50,7 +48,7 @@ func (h *AuthHandler) Logout(c *gin.Context) {
 }
 
 func (h *AuthHandler) Register(c *gin.Context) {
-	var req dto.RegisterRequest
+	var req RegisterRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		h.logger.Warn("Invalid register payload", zap.Error(err))
 		response.BadRequest(c, err.Error())

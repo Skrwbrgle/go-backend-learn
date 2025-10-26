@@ -1,11 +1,8 @@
-package handler
+package user
 
 import (
 	"strconv"
 
-	"github.com/Skrwbrgle/go-backend-learn/internal/dto"
-	"github.com/Skrwbrgle/go-backend-learn/internal/model"
-	"github.com/Skrwbrgle/go-backend-learn/internal/service"
 	"github.com/Skrwbrgle/go-backend-learn/pkg/bcrypt"
 	"github.com/Skrwbrgle/go-backend-learn/pkg/response"
 	"github.com/Skrwbrgle/go-backend-learn/pkg/validator"
@@ -15,16 +12,16 @@ import (
 )
 
 type UserHandler struct {
-	service service.UserService
+	service UserService
 	logger  *zap.Logger
 }
 
-func NewUserHandler(service service.UserService, logger *zap.Logger) *UserHandler {
+func NewUserHandler(service UserService, logger *zap.Logger) *UserHandler {
 	return &UserHandler{service, logger}
 }
 
 func (h *UserHandler) CreateUser(c *gin.Context) {
-	var req dto.CreateUserRequest
+	var req CreateUserRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		h.logger.Warn("Invalid request body", zap.Error(err))
@@ -44,7 +41,7 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 		return
 	}
 
-	user := model.User{
+	user := User{
 		Name:     req.Name,
 		Email:    req.Email,
 		Password: bcrypt.HashPassword(req.Password),
@@ -58,7 +55,7 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 	}
 
 	h.logger.Info("User created successfully", zap.String("email", user.Email), zap.String("role", user.Role))
-	response.Created(c, dto.UserResponse{
+	response.Created(c, UserResponse{
 		ID:    user.ID,
 		Name:  user.Name,
 		Email: user.Email,
@@ -117,7 +114,7 @@ func (h *UserHandler) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	var input model.User
+	var input User
 	if err := c.ShouldBindJSON(&input); err != nil {
 		h.logger.Warn("Invalid request body", zap.Error(err))
 		response.BadRequest(c, err.Error())
@@ -130,7 +127,7 @@ func (h *UserHandler) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	updateData := model.User{
+	updateData := User{
 		Name:     input.Name,
 		Email:    input.Email,
 		Password: input.Password,

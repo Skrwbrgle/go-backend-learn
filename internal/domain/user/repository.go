@@ -1,17 +1,16 @@
-package repository
+package user
 
 import (
-	"github.com/Skrwbrgle/go-backend-learn/internal/model"
 	"github.com/google/uuid"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
 type UserRepository interface {
-	Create(user *model.User) error
-	FindAll(page, limit int, search string) ([]model.User, int64, error)
-	FindByID(id uuid.UUID) (*model.User, error)
-	Update(user *model.User) error
+	Create(user *User) error
+	FindAll(page, limit int, search string) ([]User, int64, error)
+	FindByID(id uuid.UUID) (*User, error)
+	Update(user *User) error
 	Delete(id uuid.UUID) error
 }
 
@@ -24,16 +23,16 @@ func NewUserRepository(db *gorm.DB, logger *zap.Logger) UserRepository {
 	return &userRepo{db, logger}
 }
 
-func (r *userRepo) Create(user *model.User) error {
+func (r *userRepo) Create(user *User) error {
 	r.logger.Info("Creating user", zap.String("email", user.Email))
 	return r.db.Create(user).Error
 }
 
-func (r *userRepo) FindAll(page, limit int, search string) ([]model.User, int64, error) {
-	var users []model.User
+func (r *userRepo) FindAll(page, limit int, search string) ([]User, int64, error) {
+	var users []User
 	var totalRows int64
 
-	query := r.db.Model(&model.User{})
+	query := r.db.Model(&User{})
 	if search != "" {
 		query = query.Where("name ILIKE  ? OR email ILIKE  ? OR role ILIKE  ?", "%"+search+"%", "%"+search+"%", "%"+search+"%")
 	}
@@ -53,8 +52,8 @@ func (r *userRepo) FindAll(page, limit int, search string) ([]model.User, int64,
 	return users, totalRows, nil
 }
 
-func (r *userRepo) FindByID(id uuid.UUID) (*model.User, error) {
-	var user model.User
+func (r *userRepo) FindByID(id uuid.UUID) (*User, error) {
+	var user User
 	if err := r.db.First(&user, "id = ?", id).Error; err != nil {
 		return nil, err
 	}
@@ -63,12 +62,12 @@ func (r *userRepo) FindByID(id uuid.UUID) (*model.User, error) {
 	return &user, nil
 }
 
-func (r *userRepo) Update(user *model.User) error {
+func (r *userRepo) Update(user *User) error {
 	r.logger.Info("Updating user", zap.String("email", user.Email))
 	return r.db.Save(user).Error
 }
 
 func (r *userRepo) Delete(id uuid.UUID) error {
 	r.logger.Info("Deleting user", zap.String("id", id.String()))
-	return r.db.Delete(&model.User{}, "id = ?", id).Error
+	return r.db.Delete(&User{}, "id = ?", id).Error
 }

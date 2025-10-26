@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/Skrwbrgle/go-backend-learn/internal/model"
+	"github.com/Skrwbrgle/go-backend-learn/internal/domain/user"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
 	"github.com/jmoiron/sqlx"
@@ -39,7 +39,7 @@ func RunMigrations(db *sqlx.DB) {
 
 func AutoMigrate(db *gorm.DB) {
 	err := db.AutoMigrate(
-		&model.User{},
+		&user.User{},
 		// &model.Product{},
 		// &model.Order{},
 	)
