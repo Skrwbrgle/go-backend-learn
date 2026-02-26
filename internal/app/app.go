@@ -52,8 +52,10 @@ func NewApp() *App {
 
 	r := gin.Default()
 
-	// Logging middleware
-	r.Use(middleware.LoggerMiddleware(logger.Log))
+	// Middleware stack (order matters!)
+	r.Use(middleware.CorrelationIDMiddleware())     // 1. Add correlation ID ke setiap request
+	r.Use(middleware.LoggerMiddleware(logger.Log))  // 2. Log request
+	r.Use(middleware.MetricsMiddleware())           // 3. Record metrics
 
 	// Router
 	routes.SetupRouter(r, db)

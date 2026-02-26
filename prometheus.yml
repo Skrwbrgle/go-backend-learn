@@ -1,0 +1,52 @@
+# Prometheus Configuration
+# Purpose: Tell Prometheus di mana collect metrics
+
+global:
+  # How often to scrape the targets
+  scrape_interval: 15s
+  
+  # How often to evaluate alert rules
+  evaluation_interval: 15s
+  
+  # Labels attached to all metrics from this Prometheus instance
+  external_labels:
+    monitor: 'go-backend-learn'
+    environment: 'development'
+
+# Scrape configurations - tell Prometheus endpoints to collect metrics from
+scrape_configs:
+  - job_name: 'go-app'
+    
+    # How often scrape this target
+    scrape_interval: 5s
+    
+    # Static list of targets (hostnames/IPs)
+    static_configs:
+      - targets: ['localhost:8080']
+    
+    # Path where metrics exposed (default: /metrics)
+    metrics_path: '/metrics'
+    
+    # Optional: basic auth
+    # basic_auth:
+    #   username: 'admin'
+    #   password: 'secret'
+
+  # Optional: Add more targets/services later
+  # - job_name: 'postgres'
+  #   static_configs:
+  #     - targets: ['localhost:5432']
+  # 
+  # - job_name: 'redis'
+  #   static_configs:
+  #     - targets: ['localhost:6379']
+
+# Alertmanager configuration (optional)
+# alerting:
+#   alertmanagers:
+#     - static_configs:
+#         - targets: []
+
+# Load alert rules (optional)
+# rule_files:
+#   - "alert_rules.yml"

@@ -14,6 +14,7 @@ func LoggerMiddleware(logger *zap.Logger) gin.HandlerFunc {
 		method := c.Request.Method
 		clientIP := c.ClientIP()
 		userAgent := c.Request.UserAgent()
+		correlationID := GetCorrelationID(c) // Get correlation ID dari context
 
 		c.Next()
 
@@ -21,6 +22,7 @@ func LoggerMiddleware(logger *zap.Logger) gin.HandlerFunc {
 		duration := time.Since(start)
 
 		fields := []zap.Field{
+			zap.String("correlation_id", correlationID), // Add correlation ID ke logs
 			zap.String("method", method),
 			zap.String("path", path),
 			zap.Int("status", status),
